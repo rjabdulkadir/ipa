@@ -1,1 +1,1 @@
-This folder will hold the hardware design files.
+This folder holds the hardware design files.
