@@ -1,5 +1,5 @@
 # IPA
-Inclusive Pay Africa is being implemented by a consortium led by [Qua-Qua Capital Services](quaquacapitalservices.com). This repository contains hardware design and operating software files, for a low cost portable terminal that will allow various types of financial transactions over mobile network or Wi-Fi channels.
+Inclusive Pay Africa is being implemented by a consortium led by [Qua-Qua Capital Services](quaquacapitalservices.com). This repository contains Schematics, PCB layouts and operating software sources, for a reference design low cost portable terminal that will allow various types of financial transactions over mobile network or Wi-Fi channels.
 # Getting Started
 The operating software is developed using micropython on the ESP-32 microcontroller platform with SIMcom SIM800C GSM and a PN532 based NFC boards. The reference display is a 240x135 lCD module based on the ST7789 display driver chip. A generic 58mm thermal printer supporting a UART interface can be used for receipt printing. Development kits for all of these components are widely available.
 # Hardware Components
@@ -18,5 +18,3 @@ The reference design uses and standard 58mm mini thermal printer available from 
 This module is used to charge the lithium ion rechargeable battery and supply power to the other components.
 ## Lithium Ion Battery
 The reference design is powered by a lithium ion 3.7V 5000mAh battery.
-
-Schematics and PCB layouts for a reference design which includes a 3 key touchpad is available in this repository.
