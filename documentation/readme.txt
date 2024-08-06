@@ -1,1 +1,1 @@
-This folder will hold the documentation files.
+This folder holds the documentation files.
