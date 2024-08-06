@@ -98,7 +98,7 @@ def init_simcom_http(serialPort, connection_attempts=10,
 
 def send_simcom_http_query(serialPort,
         url_path='/ayer_admin/order', 
-        auth=True, username='wurii', password='dumbbell', keep_alive=True,
+        auth=True, keep_alive=True,
         empty_read_count=100):
     connect_wait = 0
     result = b''
