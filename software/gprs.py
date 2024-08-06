@@ -2,7 +2,6 @@ import time
 import struct
 import binascii
 import re
-import ota_upgrade
 from machine import Pin
 from machine import UART
 from sim808 import *
@@ -23,7 +22,7 @@ def send_at_command(serialPort: UART, commandString: str, waitTime: int) -> byte
     return replyString
 
 
-def set_ssl(uart: UART) -> bytes:
+def set_ssl(uart):
     ssl_status = send_at_command(uart, 'AT+CIPSSL=1', 1)
     return ssl_status
 
@@ -160,56 +159,6 @@ def send_simcom_ntp_query(serialPort):
     return t
 
 
-def get_vouchers(uart, operator='ethiotelecom'):
-    username=pttconfigure.get_conf_param('server_auth_user_name')
-    password=pttconfigure.get_conf_param('server_auth_password')
-    url_path=pttconfigure.get_conf_param('purchase_download_url')
-    device_id=pttconfigure.get_conf_param('device_id')
-    device_pass=pttconfigure.get_conf_param('device_password')
-    connect_status = b''
-    http_data = b''
-    http_request = url_path + b'?IMEI=' + device_id + b'&PASSWORD=' + device_pass
-    network_register_status = register_network(uart, timeout=5)
-    print('Registration Status: ', network_register_status)
-    if not network_register_status:
-        return None
-    time.sleep(3)
-    data_connect_status = init_simcom_gprs(uart)
-    print('Data Connect Status: ', data_connect_status)
-    ssl_status = set_ssl(uart)
-    print('SSL Status: ', ssl_status)
-    if data_connect_status is not None:
-        connect_status = init_simcom_http(uart)
-        print('Connect Status: ', connect_status)
-    #if b'CONNECT' in connect_status:
-    if connect_status:
-        http_data = send_simcom_http_query(uart, url_path=http_request, keep_alive=False)
-        print('HTTP Data: ', http_data)
-    return http_data
-
-
-def send_order(uart, order_request):
-    connect_status = b''
-    http_data = b''
-    network_register_status = register_network(uart, timeout=5)
-    print('Registration Status: ', network_register_status)
-    if not network_register_status:
-        return None
-    time.sleep(3)
-    data_connect_status = init_simcom_gprs(uart)
-    print('Data Connect Status: ', data_connect_status)
-    ssl_status = set_ssl(uart)
-    print('SSL Status: ', ssl_status)
-    if data_connect_status is not None:
-        connect_status = init_simcom_http(uart)
-        print('Connect Status: ', connect_status)
-    #if b'CONNECT' in connect_status:
-    if connect_status:
-        http_data = send_simcom_http_query(uart, url_path=order_request)
-        print('HTTP Data: ', http_data)
-    return http_data
-
-
 def get_ntp_time(uart):
     network_register_status = register_network(uart, timeout=5)
     print('Registration Status: ', network_register_status)
@@ -244,126 +193,3 @@ def parse_ntp_time(ntp_time):
         return ntp_year, ntp_month, ntp_day_of_month, ntp_day_of_week, ntp_hour, ntp_minute, ntp_second, ntp_millisecond
     except:
         return None
-
-
-def upgrade_gprs(uart):
-    username=pttconfigure.get_conf_param('server_auth_user_name')
-    password=pttconfigure.get_conf_param('server_auth_password')
-    url_path=pttconfigure.get_conf_param('upgrade_download_url')
-    device_id=pttconfigure.get_conf_param('device_id'),
-    device_pass=pttconfigure.get_conf_param('device_password')
-    connect_status = b''
-    http_data = b''
-    file_data = b''
-    file_hash = b''
-    upgrades_success = False
-    network_register_status = register_network(uart, timeout=5)
-    print('Registration Status: ', network_register_status)
-    if not network_register_status:
-        return None
-    time.sleep(3)
-    data_connect_status = init_simcom_gprs(uart)
-    print('Data Connect Status: ', data_connect_status)
-    ssl_status = set_ssl(uart)
-    print('SSL Status: ', ssl_status)
-    if data_connect_status is not None:
-        connect_status = init_simcom_http(uart)
-        print('Connect Status: ', connect_status)
-    #if b'CONNECT' in connect_status:
-    if connect_status:
-        http_data = send_simcom_http_query(uart,
-            url_path=url_path + 'upgraded_files.txt', 
-            auth=True, username='wurii', password='dumbbell')
-        print('HTTP data: ', http_data)
-        file_data = http_data.split(b'\r\n')[-1:][0]
-        print('File data: ', file_data)
-        print('Upgraded files: ', file_data)
-        http_data = send_simcom_http_query(uart,
-            url_path=url_path + 'upgraded_files.txt.sha1', 
-            auth=True, username='wurii', password='dumbbell')
-        file_hash = http_data.split(b'\r\n')[-1:][0]
-        print('Upgraded files hash: ', file_hash)
-    if ota_upgrade.check_integrity(file_data, file_hash):
-        print('Lets continue...')
-        files_list = file_data.split(b'\n')[:-1]
-        all_good = True
-        for file_name in files_list:
-            print('File name: ', file_name)
-            http_data = send_simcom_http_query(uart,
-                url_path=url_path + str(file_name, 'ascii'),
-                auth=True, username='wurii', password='dumbbell')
-            content_length_match = re.search('Content-Length: \d+', http_data)
-            content_length =  int(content_length_match.group(0).split(b':')[1])
-            file_data = http_data[-content_length:]
-            #file_data = http_data[http_data.find(b'Keep-Alive\r\n\r\n') + 14:]
-            print('Retrieved file: ', http_data)
-            http_data = send_simcom_http_query(uart,
-                url_path=url_path + str(file_name + b'.sha1', 'ascii'),
-                auth=True, username='wurii', password='dumbbell')
-            content_length_match = re.search('Content-Length: \d+', http_data)
-            content_length =  int(content_length_match.group(0).split(b':')[1])
-            file_hash = http_data[-content_length:]
-            #file_hash = http_data[http_data.find(b'Keep-Alve\r\n\r\n') + 14:]
-            print('Retrieved file: ', http_data)
-            if ota_upgrade.check_integrity(file_data, file_hash):
-                print('Hooooooooray!!!!!')
-                print('Writing: ', file_name + '.new')
-                fh = open(file_name + '.new', 'w')
-                fh.write(file_data)
-                fh.close()
-            else:
-                print('Nooooooooooo!!!!!')
-                all_good = False
-                break
-        if all_good:
-			upgrades_success = ota_upgrade.apply_upgrades(files_list)
-	return upgrades_success
-
-
-def get_account(uart, rfid_tag_sn):
-    get_account_url = pttconfigure.get_conf_param('get_account_url')
-    full_account_path = get_account_url + rfid_tag_sn
-    connect_status = b''
-    http_data = b''
-    network_register_status = register_network(uart, timeout=5)
-    print('Registration Status: ', network_register_status)
-    if not network_register_status:
-        return None
-    time.sleep(3)
-    data_connect_status = init_simcom_gprs(uart)
-    print('Data Connect Status: ', data_connect_status)
-    ssl_status = set_ssl(uart)
-    print('SSL Status: ', ssl_status)
-    if data_connect_status is not None:
-        connect_status = init_simcom_http(uart)
-        print('Connect Status: ', connect_status)
-    #if b'CONNECT' in connect_status:
-    time.sleep(1)
-    if connect_status:
-        http_data = send_simcom_http_query(uart, url_path=full_account_path,
-                empty_read_count=20, keep_alive=False)
-        print('HTTP Data: ', http_data)
-    return http_data
-
-
-def confirm_order_download(uart, confirm_url):
-    connect_status = b''
-    http_data = b''
-    network_register_status = register_network(uart, timeout=5)
-    print('Registration Status: ', network_register_status)
-    if not network_register_status:
-        return None
-    time.sleep(3)
-    data_connect_status = init_simcom_gprs(uart)
-    print('Data Connect Status: ', data_connect_status)
-    ssl_status = set_ssl(uart)
-    print('SSL Status: ', ssl_status)
-    if data_connect_status is not None:
-        connect_status = init_simcom_http(uart)
-        print('Connect Status: ', connect_status)
-    #if b'CONNECT' in connect_status:
-    if connect_status:
-        http_data = send_simcom_http_query(uart, url_path=confirm_url)
-        print('HTTP Data: ', http_data)
-    return http_data
-
