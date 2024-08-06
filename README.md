@@ -14,5 +14,9 @@ The PN532 is the most popular NFC chip, that can read and write to tags and card
 This is a 240x135 LCD display that can display 65K colors.
 ## Thermal Printer
 The reference design uses and standard 58mm mini thermal printer available from many suppliers.
+## Single Cell Lithium Ion Battery Charger/5V Converter Module
+This module is used to charge the lithium ion rechargeable battery and supply power to the other components.
+## Lithium Ion Battery
+The reference design is powered by a lithium ion 3.7V 5000mAh battery.
 
 Schematics and PCB layouts for a reference design which includes a 3 key touchpad is available in this repository.
