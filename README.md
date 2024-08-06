@@ -1,5 +1,5 @@
 # IPA
-Inclusive Pay Africa is being implemented by a consortium led by [Qua-Qua Capital Services](quaquacapitalservices.com). This repository contains Schematics, PCB layouts and operating software sources, for a reference design low cost portable terminal that will allow various types of financial transactions over mobile network or Wi-Fi channels.
+Inclusive Pay Africa (IPA) is a comprehensive, inclusive, and affordable payment aggregation project that is being implemented by a consortium led by [Qua-Qua Capital Services](quaquacapitalservices.com). This repository contains Schematics, PCB layouts and operating software sources, for a reference design low cost portable terminal that will allow various types of financial transactions over mobile network or Wi-Fi channels.
 # Getting Started
 The operating software is developed using micropython on the ESP-32 microcontroller platform with SIMcom SIM800C GSM and a PN532 based NFC boards. The reference display is a 240x135 lCD module based on the ST7789 display driver chip. A generic 58mm thermal printer supporting a UART interface can be used for receipt printing. Development kits for all of these components are widely available.
 # Hardware Components
