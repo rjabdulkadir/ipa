@@ -16,3 +16,20 @@ The reference design uses and standard 58mm mini thermal printer available from 
 This module is used to charge the lithium ion rechargeable battery and supply power to the other components.
 ## Lithium Ion Battery
 The reference design is powered by a lithium ion 3.7V 5000mAh battery.
+# Software
+## Setting Up a Development System
+### Introduction
+The software for the reference system is based on Micropython. The easiest path to get started is to obtain a development board that can be connect to a PC, and using a terminal program to run the Micropython REPL. This document describes this process.
+### Getting Micropython
+TBW
+### Flashing Micropython
+TBW
+### Uploading Modules
+TBW
+### Using the Micropython REPL
+## Running in a Production Setting
+TBW
+### Compiling Micropython
+TBW
+### ESP32 Flash Encryption and Secure Boot
+TBW
