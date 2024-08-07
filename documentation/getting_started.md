@@ -19,14 +19,15 @@ The reference design is powered by a lithium ion 3.7V 5000mAh battery.
 # Software
 ## Setting Up a Development System
 ### Introduction
-The software for the reference system is based on Micropython. The easiest path to get started is to obtain a development board that can be connect to a PC, and using a terminal program to run the Micropython REPL. This document describes this process.
+The software for the reference system is based on Micropython. The easiest path is to get started is to obtain a development board that can be connect to a PC, and using a terminal program to run the Micropython REPL. This document describes this process.
 ### Getting Micropython
-TBW
-### Flashing Micropython
-TBW
+Instructions for obtaining and flashing Micropython for the ESP32 can be found [here](https://docs.micropython.org/en/latest/esp32/tutorial/intro.html).
 ### Uploading Modules
-TBW
+* A list of tools that can be used to develop and upload modules can be found [here](https://randomnerdtutorials.com/micropython-ides-esp32-esp8266/).
+* Instructions for using the command line Adafruit Micropython Tool ampy can be found [here](https://pypi.org/project/adafruit-ampy/).
+* Instructions on using the Thonny development environment can be found [here](https://randomnerdtutorials.com/getting-started-thonny-micropython-python-ide-esp32-esp8266/).
 ### Using the Micropython REPL
+The Micropthon REPL (Read Evaluate Print Loop) is a useful tool for learning Micropython and for developing and testing modules. A free tool that can be used for this, available for PCs running both Windows and Linux is [putty](https://www.putty.org/). Downloads are can be found [here](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html). A short introduction on how to use MicroPython from the REPL can be found [here](https://docs.micropython.org/en/latest/esp8266/tutorial/repl.html).
 ## Running in a Production Setting
 TBW
 ### Compiling Micropython
