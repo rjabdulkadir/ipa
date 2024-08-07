@@ -1,5 +1,5 @@
 # Getting Started
-The operating software is developed using micropython on the ESP-32 microcontroller platform with SIMcom SIM800C GSM and a PN532 based NFC boards. The reference display is a 240x135 lCD module based on the ST7789 display driver chip. A generic 58mm thermal printer supporting a UART interface can be used for receipt printing. Development kits for all of these components are widely available.
+The operating software is developed using Micropython on the ESP-32 microcontroller platform with SIMcom SIM800C GSM and a PN532 based NFC boards. The reference display is a 240x135 lCD module based on the ST7789 display driver chip. A generic 58mm thermal printer supporting a UART interface can be used for receipt printing. Development kits for all of these components are widely available.
 # Hardware Components
 The reference design is based on the following components. 
 ## ESP32 Micropython development boards
@@ -27,7 +27,7 @@ Instructions for obtaining and flashing Micropython for the ESP32 can be found [
 * Instructions for using the command line Adafruit Micropython Tool ampy can be found [here](https://pypi.org/project/adafruit-ampy/).
 * Instructions on using the Thonny development environment can be found [here](https://randomnerdtutorials.com/getting-started-thonny-micropython-python-ide-esp32-esp8266/).
 ### Using the Micropython REPL
-The Micropthon REPL (Read Evaluate Print Loop) is a useful tool for learning Micropython and for developing and testing modules. A free tool that can be used for this, available for PCs running both Windows and Linux is [putty](https://www.putty.org/). Downloads are can be found [here](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html). A short introduction on how to use MicroPython from the REPL can be found [here](https://docs.micropython.org/en/latest/esp8266/tutorial/repl.html).
+The Micropthon REPL (Read Evaluate Print Loop) is a useful tool for learning Micropython and for developing and testing modules. A free tool that can be used for this, available for PCs running both Windows and Linux is [putty](https://www.putty.org/). Downloads are can be found [here](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html). A short introduction on how to use MicroPython from the REPL can be found [here](https://docs.micropython.org/en/latest/esp8266/tutorial/repl.html). Micropython documentation including tutorials for different platforms can be found [here](https://docs.micropython.org/en/latest/index.html).
 ## Running in a Production Setting
 TBW
 ### Compiling Micropython
