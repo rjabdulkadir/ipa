@@ -1,1 +1,1 @@
-This folder hold files with example code demonstrating the use of the different modules.
+This folder holds files with example code demonstrating the use of the different modules.
