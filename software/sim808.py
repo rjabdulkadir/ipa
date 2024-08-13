@@ -1,20 +1,39 @@
+"""
+Functions for GSM connectivity.
+"""
+
 from machine import UART, Pin
 import time
 
 def init_sim808():
+    """
+    activates the module and returns a UART object.
+
+    Parameters:
+    None
+
+    Returns:
+    gsm_uart (uart): The UART object used to communicate with the module.
+    """
     dtr_pin = Pin(13, Pin.OUT)
     gsm_uart = UART(1, baudrate=9600, bits=8, parity=None, stop=1, rx=27, tx=14)
-    
     gsm_uart.write(b'at+csclk=1\r\n')
     time.sleep_ms(1500)
-
     dtr_pin.value(0)
     time.sleep_ms(1000)
-
     return gsm_uart
 
 
 def activate_gsm(gsm_uart):
+    """
+    Activate mobile network connectivity.
+
+    Parameters:
+    gsm_uart (uart): The GSM module UART interface.
+
+    Returns:
+    result (string): The result of the AT command to activate the module.
+    """
     gsm_uart.write(b'at+csclk=1\r\n')
     time.sleep_ms(500)
     dtr_pin = Pin(13, Pin.OUT)
@@ -30,6 +49,15 @@ def activate_gsm(gsm_uart):
 
 
 def deactivate_gsm(gsm_uart):
+    """
+    Deactivate mobile network connectivity (and set to low power mode).
+
+    Parameters:
+    gsm_uart (uart): The GSM module UART interface.
+
+    Returns:
+    result (string): The result of the AT command to deactivate the module.
+    """
     dtr_pin = Pin(13, Pin.OUT)
     gsm_uart.write(b'at+csclk=1\r\n')
     time.sleep_ms(1500)
@@ -42,6 +70,15 @@ def deactivate_gsm(gsm_uart):
 
 
 def get_power_status(gsm_uart):
+    """
+    Get information on the charge of the connected battery.
+
+    Parameters:
+    gsm_uart (uart): The GSM module UART interface.
+
+    Returns:
+    result (tuple): The values - charging status, charge level, voltage (mV).
+    """
     #gsm_uart.write(b'at+cfun=0\r\n')
     time.sleep_ms(100)
     result = gsm_uart.read()
@@ -65,6 +102,15 @@ def get_power_status(gsm_uart):
 
 
 def get_gprs_status(gsm_uart):
+    """
+    Query the status of the GPRS mobile network connection.
+
+    Parameters:
+    gsm_uart (uart): The GSM module UART interface.
+
+    Returns:
+    (boolean): The status of the GPRS connection.
+    """
     gsm_uart.write(b'at+cgatt?\r\n')
     time.sleep_ms(100)
     result = gsm_uart.read()
@@ -78,6 +124,15 @@ def get_gprs_status(gsm_uart):
 
 
 def get_registration_status(gsm_uart):
+    """
+    Query the status of the mobile network registration.
+
+    Parameters:
+    gsm_uart (uart): The GSM module UART interface.
+
+    Returns:
+    (boolean): The registration status.
+    """
     gsm_uart.write(b'at+creg?\r\n')
     time.sleep_ms(500)
     result = gsm_uart.read()
@@ -91,30 +146,32 @@ def get_registration_status(gsm_uart):
 
 
 def register_network(gsm_uart, timeout=10):
-    #dtr_pin = Pin(13, Pin.OUT)
-    #dtr_pin.value(0)
-    #time.sleep(0.1)
-    #result = gsm_uart.write(b'at+cfun=1\r\n')
-    #time.sleep(1)
-    #result = gsm_uart.write(b'at+cfun=1,1\r\n')
-    #time.sleep(1)
+    """
+    Register on the mobile network.
+
+    Parameters:
+    gsm_uart (uart): The GSM module UART interface.
+    timeout (int): Number of attempts to register.
+
+    Returns:
+    result (boolean): The status of the registration attempt.
+    """
     t = 0
     result = get_registration_status(gsm_uart)
     time.sleep(0.1)
-    print('Reg status: ', result)
+    # print('Reg status: ', result)
     while not result and t < timeout:
-        print('Registering... ')
+        # print('Registering... ')
         gsm_uart.write(b'at+cfun=1\r\n')
         time.sleep(1)
         result = get_registration_status(gsm_uart)
         time.sleep(1)
-        print('Reg status: ', result)
+        # print('Reg status: ', result)
         t += 1
         if result:
             gsm_uart.write(b'at+cfun=1,1\r\n')
             time.sleep(5)
-
-    if not result:
-        print('REGISTRATION FAILED!')
+    #if not result:
+        # print('REGISTRATION FAILED!')
     return result
 
