@@ -1,3 +1,7 @@
+"""
+Functions related to GPRS connectivity.
+"""
+
 import time
 import struct
 import binascii
@@ -8,8 +12,19 @@ from sim808 import *
 import pttconfigure
 
 
-
 def send_at_command(serialPort: UART, commandString: str, waitTime: int) -> bytes:
+    """
+    Sends AT commands to the GPRS module and returns the result.
+
+    Paramenters:
+    serialPort (uart): The UART interface to the GSM/GPRS module.
+    commandString (string): The AT command string.
+    waitTime (int): The time to wait between sending the AT command
+                    and reading the reply.
+
+    Returns:
+    replyString (string): The reply to the AT command.
+    """
     serialPort.write(bytes(commandString, 'ascii') + b'\r\n')
     time.sleep(waitTime)
     replyString: bytes = b''
@@ -23,24 +38,31 @@ def send_at_command(serialPort: UART, commandString: str, waitTime: int) -> byte
 
 
 def set_ssl(uart):
+    """
+    Configures the module to communicate over SSL.
+
+    Paramenters:
+    uart (uart): The UART interface to the GSM/GPRS module.
+
+    Returns:
+    ssl_status (string): The result of the At command to set SSL connectivity.
+    """
     ssl_status = send_at_command(uart, 'AT+CIPSSL=1', 1)
     return ssl_status
 
 
 def extract_http_payload(file_data):
+    """
+    Extracts the HTTP content from the reponse.
+
+    Parameters:
+    file_data (string): The reponse from an HTTP request.
+
+    Returns:
+    file_data_payload (string): The extracted HTTP data.
+    """
     # get content length from between Content-Length and Keep-Alive strings
     try:
-        """
-        cl_start_pos = file_data.find(b'Content-Length')
-        #cl_end_pos = file_data.find(b'Access-Control-Allow-Origin')
-        cl_end_pos = file_data.find(b'Connection')
-        content_length = int(file_data[cl_start_pos:cl_end_pos][16:-2])
-        len_file_data = len(file_data)
-        print('CL Start: ', cl_start_pos, 'Cl End: ', cl_end_pos,
-              'Cont Len: ', content_length, 'Data len: ', len_file_data)
-        #file_data_payload = file_data[len_file_data - content_length - 10:-10]
-        file_data_payload = file_data[len_file_data - content_length:]
-        """
         s_1 = re.search(b'Content-Length: [0-9]+\r\n', file_data)
         s_2 = re.search('[0-9]+', s_1.group(0))
         data_offset = int(s_2.group(0))
@@ -55,6 +77,15 @@ def extract_http_payload(file_data):
 
 
 def init_simcom(uart):
+    """
+    Activate the GSM/GPRS module.
+
+    Parameters:
+    uart (uart): The UART interface to the GSM/GPRS module.
+
+    Returns:
+    init_status (string): The result of the command to activate.
+    """
     dtr_pin = Pin(13, Pin.OUT)
     dtr_pin.value(0)
     time.sleep(0.2)
@@ -63,8 +94,16 @@ def init_simcom(uart):
 
 
 def init_simcom_gprs(serialPort, timeout=5):
-    #attach_status = send_at_command(serialPort, 'at+cgatt?', 1)
-    #print('Attach status: ', attach_status)
+    """
+    Activate mobile data on the GSM/GPRS module.
+
+    Parameters:
+    serialPort (uart): The UART interface to the GSM/GPRS module.
+    timeout (int): Maximum time (sec) to wait for activation.
+
+    Returns:
+    gprs_ib_obj (string): ip address if successful (none otherwise).
+    """
     gprsStatus = send_at_command(serialPort, 'at+cifsr', 1)
     gprs_ip_obj = re.search('\w*\.\w*\.\w*\.\w*', gprsStatus)
     t = 0
@@ -81,6 +120,18 @@ def init_simcom_gprs(serialPort, timeout=5):
 
 def init_simcom_http(serialPort, connection_attempts=10,
         ip_address=pttconfigure.get_conf_param('server_ip_address'), port='443'):
+    """
+    Initialize an HTTPS session.
+
+    Parameters:
+    serialPort (uart): The UART interface to the GSM/GPRS module.
+    connection_attempts (int): Number of tries to initiate the session.
+    ip_address (string): The server ip address (or host name).
+    port (string): The port to connect (443 is standard https port).
+
+    Returns:
+    (boolean): Success or faliure of the attempt.
+    """
     serialPort.read()
     no_tries = 0
     result = b''
@@ -100,10 +151,22 @@ def send_simcom_http_query(serialPort,
         url_path='/ayer_admin/order', 
         keep_alive=True,
         empty_read_count=100):
+    """
+    Sends an HTTPS request.
+
+    Parameters:
+    serialPort (uart): The UART interface to the GSM/GPRS module.
+    url_parth (string): The url path for the request.
+    keep_alive (bool): Include/Not-include keep-alive request in the http header.
+    empty_read_count (int): number of empty data reads before terminating the request.
+
+    Returns:
+    http_data (string): The data returned by the server for the HTTPS request.
+    """
     connect_wait = 0
     result = b''
     while connect_wait < 50 and b'>' not in result:
-        print('Connecting to HTTP server...')
+        # print('Connecting to HTTP server...')
         result = send_at_command(serialPort, b'at+cipsend', 1)
         connect_wait += 1
         time.sleep(0.2)
@@ -112,10 +175,6 @@ def send_simcom_http_query(serialPort,
     serialPort.write(b'GET ' + url_path + b' HTTP/1.0\r\n')
     if keep_alive:
         serialPort.write('Connection: keep-alive\r\n')
-    #if auth:
-    #    auth_string = str(binascii.b2a_base64(username + ':' + password)[:-1], 'ascii')
-        #serialPort.write('Authorization: Basic aXRyYWNrOml0cmFjaw==\r\n')
-    #    serialPort.write('Authorization: Basic ' + auth_string + '\r\n')
     serialPort.write('\r\n\r\n\x1a')
     time.sleep(0.5)
     httpResult = serialPort.read(128)
@@ -123,7 +182,7 @@ def send_simcom_http_query(serialPort,
     http_data = b''
     empty_read_counts = 0
     while empty_read_counts < empty_read_count:
-        print('HTTP Result: ', httpResult)
+        # print('HTTP Result: ', httpResult)
         httpResult = serialPort.read(128)
         if httpResult is None:
             empty_read_counts = empty_read_counts + 1
@@ -136,50 +195,45 @@ def send_simcom_http_query(serialPort,
     return http_data
 
 
-def init_simcom_ntp(serialPort, ip_address='time.google.com', port='123'):
-    result = send_at_command(
-        serialPort, 'at+cipstart="UDP","' + ip_address + '","' + port + '"', 10)
-    print('at+cipstart="TCP","' + ip_address + '","' + port + '"')
-    return result
-
-
-def send_simcom_ntp_query(serialPort):
-    result = send_at_command(serialPort, b'at+cipsend', 1)
-    time.sleep(1)
-    REF_TIME_1970 = 2208988800
-    ntp_request = b'\x1b' + 47 * b'\0'
-    serialPort.write(ntp_request)
-    time.sleep(1)
-    ntp_data = serialPort.read(1024)
-    time.sleep(3)
-    print('NTP Data: ', ntp_data)
-    if ntp_data:
-        t = struct.unpack('!12I', ntp_data)[10]
-        t -= REF_TIME_1970
-    return t
-
-
 def get_ntp_time(uart):
+    """
+    Get the Network Time Protocol (NTP) time.
+
+    Parameters:
+    uart (uart): The UART interface to the GSM/GPRS module.
+
+    Returns:
+    ntp_time (string): The NTP date and time.
+    """
     network_register_status = register_network(uart, timeout=5)
-    print('Registration Status: ', network_register_status)
+    #print('Registration Status: ', network_register_status)
     time.sleep(3)
     data_connect_status = init_simcom_gprs(uart)
-    print('Data Connect Status: ', data_connect_status)
+    #print('Data Connect Status: ', data_connect_status)
     if data_connect_status != None:
         send_at_command(uart, 'AT+SAPBR=1,1', 1)
         send_at_command(uart, 'AT+CNTPCID=1', 1)
-        print('NTP bear profile...')
+        #print('NTP bear profile...')
         #send_at_command(uart, 'AT+CNTP="0.africa.pool.ntp.org", 12', 1)
         send_at_command(uart, 'AT+CNTP="time.google.com", 12', 1)
-        print('Set NTP service...')
+        #print('Set NTP service...')
         send_at_command(uart, 'AT+CNTP', 1)
-        print('Sync NTP time...')
+        #print('Sync NTP time...')
         ntp_time = send_at_command(uart, 'AT+CCLK?', 1)
         return ntp_time
     return None
 
 
 def parse_ntp_time(ntp_time):
+    """
+    Extract date and time parameters from datetime string.
+
+    Parameters:
+    ntp_time (string): Datetime string returned by NTP request.
+
+    Returns:
+    (tuple): Separated date and time values.
+    """
     try:
         ntp_date_time = ntp_time.split(b'"')[1]
         ntp_year = int(ntp_date_time[0:2]) + 2000
