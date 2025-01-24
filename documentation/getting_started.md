@@ -29,8 +29,10 @@ Instructions for obtaining and flashing Micropython for the ESP32 can be found [
 ### Using the Micropython REPL
 The Micropthon REPL (Read Evaluate Print Loop) is a useful tool for learning Micropython and for developing and testing modules. A free tool that can be used for this, available for PCs running both Windows and Linux is [putty](https://www.putty.org/). Downloads are can be found [here](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html). A short introduction on how to use MicroPython from the REPL can be found [here](https://docs.micropython.org/en/latest/esp8266/tutorial/repl.html). Micropython documentation including tutorials for different platforms can be found [here](https://docs.micropython.org/en/latest/index.html).
 ## Running in a Production Setting
-TBW
+The following features are usefull in production, to enable better memory utilization, improve performace, and to secure code and data.
 ### Compiling Micropython
 TBW
 ### ESP32 Flash Encryption
 The Flash Encryption feature of the ESP32 allows encryption of the contents of the off chip flash memory. This means that the contents will not be accessible by means of a direct connection to the controller. This way certain information like passwords and keys only readable by the application can be stored. The procedure to do this can be found [here](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/security/flash-encryption.html).
+### Secure Boot
+TBW
