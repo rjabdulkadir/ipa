@@ -33,4 +33,4 @@ TBW
 ### Compiling Micropython
 TBW
 ### ESP32 Flash Encryption and Secure Boot
-TBW
+The Flash Encryption feature of the ESP32 allows encryption of the contents of the off chip flash memory. This means that the contents will not be accessible by any means of a direct connection to the controller. By this means certain information like passwords and key only readable by the application can be stored. The procedure to do this can be found [here] (https://docs.espressif.com/projects/esp-idf/en/stable/esp32/security/flash-encryption.html)
