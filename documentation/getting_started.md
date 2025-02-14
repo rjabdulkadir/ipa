@@ -3,7 +3,7 @@ The operating software is developed using Micropython on the ESP-32 microcontrol
 # Hardware Components
 The reference design is based on the following components. 
 ## ESP32 Micropython development boards
-A number of boards ESP-32 development boards are available.The ESP32-DevKitC V4 described [here](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/hw-reference/esp32/get-started-devkitc.html#get-started-esp32-devkitc-board-front) is suitable.
+A number of boards ESP-32 development boards are available.The ESP32-DevKitC V4 described [here](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/index.html) is suitable.
 ## SIM800C
 This is a 2G GSM GPRS Quad Band module suitable for IoT use.
 ## PN532 Module
