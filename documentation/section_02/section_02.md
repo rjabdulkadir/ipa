@@ -42,7 +42,7 @@ b'a MAC address'        # will return the MAC address of the WiFi interface
 >>> result.text
 '<!doctype html><html itemscope="" itemtype="http://schema.org/WebPage"...lots of HTTP markup
 ```
-Micropython implements much of Python 3.4. However not all functionality and libraries are implemented. On the other hand different board or microcontroller specific functions are incorporated as shown above. Full details are available on the Micropython documentation pages.
+Micropython implements much of Python 3.4. However not all functionality and libraries are available. On the other hand different board or microcontroller specific functions are incorporated as shown above. Full details are available on the Micropython documentation pages.
 
 
 
