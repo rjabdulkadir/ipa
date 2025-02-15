@@ -29,11 +29,11 @@ The Read Evaluate Print Loop (REPL) allows you to enter a Python command which i
 
 `>>> 1 + 1`
 
-`>>> 2`
+`2`
 
 `>>> 3 / 2`
 
-`>>> 1.5`
+`1.5`
 
 `>>> def my_cube (x):`
 
@@ -41,7 +41,7 @@ The Read Evaluate Print Loop (REPL) allows you to enter a Python command which i
 
 `>>> my_cube(3)`
 
-`>>> 27`
+`27`
 
 
 
