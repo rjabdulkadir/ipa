@@ -7,18 +7,22 @@ The Read Evaluate Print Loop (REPL) allows you to enter a Python command which i
 >>> # addition
 >>> 1 + 1
 2
+
 >>> # division
 >>> 3 / 2
 1.5
+
 >>> # function definition
 >>> def my_cube (x):
-		return x * x * x
+	return x * x * x
 >>> my_cube(3)
 27
+
 >>> # ESP32 module
 >>> import esp32
 >>> esp32.mcu_temperature
 33
+
 >>> # connect to an access point
 >>> import network
 >>> wlan = network.WLAN(network.WLAN.IF_STA) # create station interface
@@ -32,14 +36,14 @@ False
 >>> wlan.isconnected()
 True
 >>> wlan.config('mac')      # get the interface's MAC address
-b'a MAC address'        # will return the MAC address of the WiFi interface 
+b'a MAC address'            # will return the MAC address of the WiFi interface 
 >>> wlan.ipconfig('addr4')  # get the interface's IPv4 addresses
 ('ip address', 'netmask')   # will return a tuple with the ip address and netmask
 
-# send an HTTP GET request and retrieve a web page
+>>> # send an HTTP GET request and retrieve a web page
 >>> import requests
->>> result = requests.get('http://www.google.com')
->>> result.text
+>>> result = requests.get('http://www.google.com')	# send a get request
+>>> result.text						# show the HTML markup of the retrieved URL
 '<!doctype html><html itemscope="" itemtype="http://schema.org/WebPage"...lots of HTTP markup
 ```
 Micropython implements much of Python 3.4. However not all functionality and libraries are available. On the other hand different board or microcontroller specific functions are incorporated as shown above. Full details are available on the Micropython documentation pages.
