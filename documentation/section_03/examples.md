@@ -2,7 +2,7 @@
 
 # Read keys
 
-```
+```python
 import time
 import buttons
 
