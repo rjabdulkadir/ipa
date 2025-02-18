@@ -24,6 +24,29 @@ def init_sim808():
     return gsm_uart
 
 
+def pwr_on():
+    """ Turns on the module.
+    """
+    pwr_pin = Pin(25, Pin.OUT)
+    pwr_pin.value(1)
+    time.sleep_ms(100)
+    pwr_pin.value(0)
+    time.sleep_ms(1200)
+    pwr_pin.value(1)
+
+
+def pwr_off():
+    """ power off the module by pulling down
+    the PWRKEY pin for at least 1.5 second
+    and release.
+    """
+    pwr_pin = Pin(25, Pin.OUT)
+    pwr_pin.value(0)
+    time.sleep_ms(1600)
+    pwr_pin.value(1)
+    time.sleep_ms(100)
+
+
 def activate_gsm(gsm_uart):
     """
     Activate mobile network connectivity.
