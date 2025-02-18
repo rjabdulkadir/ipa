@@ -23,7 +23,7 @@ while True:
 
 # Display bitmap
 
-```
+```python
 import ui_lcd
 
 # Initialize LCD
@@ -44,7 +44,7 @@ ui_lcd.show_pixbuffer(display, image_fbuf, x_pos, y_pos, width, height)
 
 # Send GSM/GPRS AT commands
 
-```
+```python
 import time
 import sim808
 
@@ -61,7 +61,7 @@ def send_at(command, delay=1):
 
 # Send SMS via GSM
 
-```
+```python
 # turn module on
 sim808.pwr_on()
 
@@ -90,7 +90,7 @@ send_sms('+251....', 'Hello, this is a test message.')
 
 - Make sure to turn on and initialize module properly
 
-```
+```python
 # simple example function to read sms inbox
 def read_sms():
     send_at('AT+CMGF=1')  # Set SMS mode to text
@@ -108,7 +108,7 @@ read_sms()
 
  - Make sure to turn on and initialize module properly
 
-```
+```python
 # simple example function to send http request
 def https_request(method, url, auth=None, data=None):
     # Initialize GPRS
