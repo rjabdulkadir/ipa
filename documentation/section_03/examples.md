@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-
 ## Example snippets
 
 # Read keys
