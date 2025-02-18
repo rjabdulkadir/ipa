@@ -23,27 +23,6 @@ Click on "Install or update firmware" at the bottom right. Again select the "Por
 
 ![thonny-repl](thonny-repl.png)
 
-## Using the REPL
-
-The Read Evaluate Print Loop (REPL) allows you to enter a Python command which is then evaluated by the interpreter and the result of the evaluation printed out. 
-
-`>>> 1 + 1`
-
-`2`
-
-`>>> 3 / 2`
-
-`1.5`
-
-`>>> def my_cube (x):`
-
-`         return x * x * x` 
-
-`>>> my_cube(3)`
-
-`27`
-
-
 
 
 
