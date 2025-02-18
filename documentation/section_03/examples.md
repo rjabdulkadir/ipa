@@ -158,7 +158,3 @@ print(https_request("POST", post_url, data=post_data))
 
 ```
 
-
-=======
-TBW
->>>>>>> dbe10596ad652aefabe3a65599ea73bc4d3468e3
