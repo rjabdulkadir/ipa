@@ -36,7 +36,7 @@ display_pwm = ui_lcd.backlight_init()
 display_pwm.duty(512)
 
 # set bmp information
-image_fbuf = ui_lcd.get_fbuf('ADC_R&D.bmp.zip')
+image_fbuf = ui_lcd.get_fbuf('ADC_RandD.bmp.zip')
 x_pos, y_pos, width, height = 0, 0, 134, 240
 
 # display the bitmap
