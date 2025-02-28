@@ -1,6 +1,6 @@
 ## Example snippets
 
-# Read keys
+# Read Keys
 
 ```python
 import time
@@ -21,7 +21,7 @@ while True:
     time.sleep(0.3)
 ```
 
-# Display bitmap
+# Display Bitmap
 
 ```python
 import ui_lcd
@@ -41,9 +41,8 @@ x_pos, y_pos, width, height = 0, 0, 134, 240
 # display the bitmap
 ui_lcd.show_pixbuffer(display, image_fbuf, x_pos, y_pos, width, height)
 ```
-
 # Send SMS
-# send SMS
+```python
 import sim808
 import sms
 
@@ -53,8 +52,9 @@ if gsm_status:
 	sms.send_sms('Hi there!', '555896345')
 else:
 	print('Unable to register on the mobile network')
- 
-# receive SMS
+```
+# Receive SMS
+```python
 import sim808
 import sms
 
@@ -65,8 +65,9 @@ if gsm_status:
 	print(message)
 else:
 	print('Unable to register on the mobile network')
-
-# send HTTPS GET/POST
+```
+# Send HTTPS GET/POST
+```python
 get_url = 'https://httpbin.org/ip'
 post_url = 'https://httpbin.org/post'
 post_data = '{"title":"test","body":"hello","userId":1}'
