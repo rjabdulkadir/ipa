@@ -42,110 +42,31 @@ x_pos, y_pos, width, height = 0, 0, 134, 240
 ui_lcd.show_pixbuffer(display, image_fbuf, x_pos, y_pos, width, height)
 ```
 
-# Send GSM/GPRS AT commands
-
-```python
-import time
+# Send SMS
+# send SMS
 import sim808
-
+import sms
 
 gsm_uart = sim808.init_sim808()
+gsm_status = sim808.register_network(gsm_uart, timeout=10)
+if gsm_status:
+	sms.send_sms('Hi there!', '555896345')
+else:
+	print('Unable to register on the mobile network')
+ 
+# receive SMS
+import sim808
+import sms
 
-# simple function to meke sending at commands easy
-def send_at(command, delay=1):
-    gsm_uart.write(command + '\r\n')
-    time.sleep(delay)
-    if gsm_uart.any():
-        print(gsm_uart.read().decode())
-```
+gsm_uart = sim808.init_sim808()
+gsm_status = sim808.register_network(gsm_uart, timeout=10)
+if gsm_status:
+	message = sms.read_sms()
+	print(message)
+else:
+	print('Unable to register on the mobile network')
 
-# Send SMS via GSM
-
-```python
-# turn module on
-sim808.pwr_on()
-
-# activate module
-sim808.activate_gsm(gsm_uart)
-
-# register module to network
-sim808.register_network(gsm_uart)
-
-
-# simple example function to send sms
-def send_sms(phone_number, message):
-    send_at('AT+CMGF=1')  # Set SMS mode to text
-    send_at(f'AT+CMGS="{phone_number}"')
-    gsm_uart.write(message + "\x1A")  # End SMS with CTRL+Z
-    time.sleep(3)
-    if gsm_uart.any():
-        print(gsm_uart.read().decode())
-
-# example usage
-send_sms('+251....', 'Hello, this is a test message.')
-
-```
-
-# Receive SMS via GSM
-
-- Make sure to turn on and initialize module properly
-
-```python
-# simple example function to read sms inbox
-def read_sms():
-    send_at('AT+CMGF=1')  # Set SMS mode to text
-    gsm_uart.write('AT+CMGL="ALL"\r\n') # read all messages
-    time.sleep(3)
-    if gsm_uart.any():
-        response = gsm_uart.read().decode()
-        print("Received SMS:", response)
-
-# Example Usage
-read_sms()
-```
-
-# Send HTTPS GET/POST requests via GPRS
-
- - Make sure to turn on and initialize module properly
-
-```python
-# simple example function to send http request
-def https_request(method, url, auth=None, data=None):
-    # Initialize GPRS
-    send_at('AT+SAPBR=3,1,"Contype","GPRS"\r\n')
-    send_at('AT+SAPBR=3,1,"APN","ETC"\r\n')
-    send_at('AT+SAPBR=1,1\r\n')
-    send_at('AT+SAPBR=2,1\r\n')
-
-    
-    send_at('AT+HTTPINIT\r\n') # init http
-    send_at('AT+HTTPPARA="CID",1\r\n')  # Set bearer profile identifier
-    send_at(f'AT+HTTPPARA="URL","{url}"\r\n')
-    send_at( 'AT+HTTPPARA="USERDATA", "Connection: keep-alive"\r\n')
-    if auth is not None:
-        send_at('AT+HTTPPARA="USERDATA", "Authorization:Basic %s"\r\n'%auth)
-    
-    send_at('AT+HTTPSSL=1\r\n')  # set ssl for https
-
-    if method == "POST":
-        send_at('AT+HTTPPARA="CONTENT","application/json"')
-        send_at(f'AT+HTTPDATA={len(data)},10000')  # Specify data length
-        gsm_uart.write(data)
-        time.sleep(2)
-        send_at('AT+HTTPACTION=1\r\n')  # 1 for POST
-    else:
-        send_at('AT+HTTPACTION=0\r\n')  # 0 for GET
-
-    time.sleep(10)
-    response = send_at('AT+HTTPREAD\r\n')  # Read server response
-    
-    send_at('AT+HTTPTERM\r\n')  # Terminate HTTP session
-    
-    return response
-
-
-# Example Usage
-
+# send HTTPS GET/POST
 get_url = 'https://httpbin.org/ip'
 post_url = 'https://httpbin.org/post'
 post_data = '{"title":"test","body":"hello","userId":1}'
