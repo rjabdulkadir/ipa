@@ -160,7 +160,7 @@ def get_registration_status(gsm_uart):
     time.sleep_ms(500)
     result = gsm_uart.read()
     try:
-        if (b'+CREG: 1,1' in result) or (b'+CREG: 0,1' in result):
+        if (b'+CREG: 1,1' in result) or (b'+CREG: 0,1' in result) or (b'+CREG: 0,5' in result):
             return True
         else:
             return False
