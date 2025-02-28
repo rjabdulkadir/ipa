@@ -37,6 +37,52 @@ def send_at_command(serialPort: UART, commandString: str, waitTime: int) -> byte
     return replyString
 
 
+def https_request(serialPort, method, url, auth=None, data=None):
+    """ simple example function to send http request
+
+    Paramenters:
+        serialPort (uart): The UART interface to the GSM/GPRS module.
+        method (str): https method 'POST' or 'GET'
+        url (str): https url
+        auth (str): https auth str
+        data (str): data string to be sent
+        
+    Returns:
+        http response (byte str)
+    """
+    # Initialize GPRS
+    send_at_command(serialPort, 'AT+SAPBR=3,1,"Contype","GPRS"', 1)
+    send_at_command(serialPort, 'AT+SAPBR=3,1,"APN","ETC"', 1)
+    send_at_command(serialPort, 'AT+SAPBR=1,1', 1)
+    send_at_command(serialPort, 'AT+SAPBR=2,1', 1)
+
+    
+    send_at_command(serialPort, 'AT+HTTPINIT', 1) # init http
+    send_at_command(serialPort, 'AT+HTTPPARA="CID",1', 1)  # Set bearer profile identifier
+    send_at_command(serialPort, f'AT+HTTPPARA="URL","{url}"', 1)
+    send_at_command(serialPort,  'AT+HTTPPARA="USERDATA", "Connection: keep-alive"', 1)
+    if auth is not None:
+        send_at_command(serialPort, 'AT+HTTPPARA="USERDATA", "Authorization:Basic %s"'%auth, 1)
+    
+    send_at_command(serialPort, 'AT+HTTPSSL=1', 1)  # set ssl for https
+
+    if method == "POST":
+        send_at_command(serialPort, 'AT+HTTPPARA="CONTENT","application/json"', 1)
+        send_at_command(serialPort, f'AT+HTTPDATA={len(data)},10000', 1)  # Specify data length
+        serialPort.write(data)
+        time.sleep(2)
+        send_at_command(serialPort, 'AT+HTTPACTION=1', 1)  # 1 for POST
+    else:
+        send_at_command(serialPort, 'AT+HTTPACTION=0', 1)  # 0 for GET
+
+    time.sleep(10)
+    response = send_at_command(serialPort, 'AT+HTTPREAD', 1)  # Read server response
+    
+    send_at_command(serialPort, 'AT+HTTPTERM', 1)  # Terminate HTTP session
+    
+    return response
+
+
 def set_ssl(uart):
     """
     Configures the module to communicate over SSL.
