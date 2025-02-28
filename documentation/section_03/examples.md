@@ -68,15 +68,32 @@ else:
 ```
 # Send HTTPS GET/POST
 ```python
+import sim808
+import gprs
+
+# get gsm uart interface
+gsm_uart = sim808.init_sim808()
+
+# turn module on
+sim808.pwr_on()
+
+# activate module
+sim808.activate_gsm(gsm_uart)
+
+# register module to network
+status = sim808.register_network(gsm_uart)
+print('registered to ntk: ', status)
+
+# Example Usage
 get_url = 'https://httpbin.org/ip'
 post_url = 'https://httpbin.org/post'
 post_data = '{"title":"test","body":"hello","userId":1}'
 
 print("GET Request:")
-print(https_request("GET", get_url))
+print(gprs.https_request(gsm_uart, "GET", get_url))
 
 print("POST Request:")
-print(https_request("POST", post_url, data=post_data))
+print(gprs.https_request(gsm_uart, "POST", post_url, data=post_data))
 
 ```
 
